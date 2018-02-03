@@ -1,3 +1,11 @@
+#define numberOfLetters 20
+#define pixelsPerLetters 35
+#include <iostream>
+#include <ctime>
+#include <fstream>
+#include <iostream>
+#include <string>
+using namespace std;
 class Perceptron {
 public:
 
@@ -8,8 +16,9 @@ public:
 	Perceptron(unsigned numOfInputs,double trainingRate);
 	Perceptron();
 	double getRandomDouble();
-	void learn(const int inputs[],int expectedResult);
-	int getResult(const int inputs[]);
-	void changeWeights(int actualResult,int desiredResult,const int inputs[]);
+	void getTestData(double[][pixelsPerLetters],int[]);
+	void learn(const double inputs[],int expectedResult);
+	int getResult(const double inputs[]);
+	void changeWeights(int actualResult,int desiredResult,const double inputs[]);
 };
 

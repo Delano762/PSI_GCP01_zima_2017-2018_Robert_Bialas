@@ -1,56 +1,26 @@
-﻿#include <iostream>
-#include <string>
+﻿
 #include "Perceptron.h"
 #pragma once
-#include <iostream>
-#include <ctime>
-#include <fstream>
-#define numberOfLetters 20
-#define pixelsPerLetters 35
 
 using namespace std;
-void getPerceptronTestData(int [][pixelsPerLetters],int []);
+void getPerceptronTestData(double [][pixelsPerLetters],int []);
+void PerceptronNonsense(Perceptron);
 int main() {
 
-	int numberOfInputs=pixelsPerLetters,numberOfEpochs=0;
+	int numberOfInputs=pixelsPerLetters;
 
-	int inputData[numberOfLetters][pixelsPerLetters];
-	int expectedResults[numberOfLetters];
-	getPerceptronTestData(inputData,expectedResults);
 	double learningRate=0.01;
 	Perceptron perceptron(numberOfInputs,learningRate);
-
-	//cout << "AND - wyniki PRZED uczeniem" << endl;
-	//cout << "Wejscie (0,0) - wynik: " << perceptron.getResult(ZERO_ZERO) << endl;
-
-	int Temp[pixelsPerLetters];
-	for(int i=0; i<numberOfLetters; i++)
-	{
-		//cout<<expectedResults[i]<<" ";
-		for(int j=0; j<pixelsPerLetters; j++)
-			Temp[i]=inputData[i][j];
-		bool done=false;
-
-		while(done==false)
-		{
-			numberOfEpochs++;
-			done=true;
-			perceptron.learn(Temp,expectedResults[i]);
-			if(perceptron.getResult(Temp)!=expectedResults[i])done=false;
-			else cout<<perceptron.getResult(Temp)<<" ";
-		}
-	}
-	cout<<endl;
-	for(int i=0; i<numberOfLetters; i++) {
-		for(int j=0; j<pixelsPerLetters; j++)
-			Temp[i]=inputData[i][j];
-		cout << perceptron.getResult(Temp) << " ";
-	}
+	PerceptronNonsense(perceptron);
+	
 
 	system("pause");
 	return 0;
 }
-void getPerceptronTestData(int inputData[][pixelsPerLetters],int expectedResults[])
+
+
+
+void getPerceptronTestData(double inputData[][pixelsPerLetters],int expectedResults[])
 {
 	fstream file;
 	file.open("data_for_learning.txt");
@@ -71,4 +41,59 @@ void getPerceptronTestData(int inputData[][pixelsPerLetters],int expectedResults
 		}
 
 	file.close();
+};
+void PerceptronNonsense(Perceptron perceptron)
+{
+
+	char Letters[20] ={'A','B','C','D','E','F','G','H','I','J','a','b','c','d','e','f','g','h','i','j'};
+	double inputData[numberOfLetters][pixelsPerLetters];
+	int expectedResults[numberOfLetters];
+	getPerceptronTestData(inputData,expectedResults);
+	int numberOfEpochs=0;
+	cout << "Perceptron - wyniki przed uczeniem: " << endl;
+
+	double Temp[pixelsPerLetters];
+	for(int i=0; i<numberOfLetters; i++)
+	{
+		for(int j=0; j<pixelsPerLetters; j++)
+		{
+			Temp[j]=inputData[i][j];
+			//cout<<Temp[i]<<" ";
+		}
+		//cout<<endl;
+		cout<<Letters[i]<<" - ";
+		for(int j=0; j<pixelsPerLetters; j++)
+			cout<<Temp[j]<<" ";
+		cout<<" "<<perceptron.getResult(Temp)<<" "<<endl;
+
+		bool done=false;
+
+		while(done==false)
+		{
+			numberOfEpochs++;
+			done=true;
+			perceptron.learn(Temp,expectedResults[i]);
+			if(perceptron.getResult(Temp)!=expectedResults[i])done=false;
+			//else cout<<perceptron.getResult(Temp)<<" ";
+			/*else
+			{
+			for(int j=0; j<pixelsPerLetters; j++)
+			cout<<Temp[j]<<" ";
+			cout<<" "<<perceptron.getResult(Temp)<<" "<<endl;
+			}*/
+
+		}
+		//cout<<endl;
+	}
+	cout<<endl;
+	cout << "Perceptron - wyniki po uczeniu: " << endl;
+	for(int i=0; i<numberOfLetters; i++) {
+		cout<<Letters[i]<<" - ";
+		for(int j=0; j<pixelsPerLetters; j++)
+		{
+			Temp[j]=inputData[i][j];
+			cout<<Temp[j]<<" ";
+		}
+		cout<<" "<< perceptron.getResult(Temp) << " "<< endl;
+	}
 };

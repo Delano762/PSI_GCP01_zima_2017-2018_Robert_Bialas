@@ -4,20 +4,17 @@
 
 
 //ucz sie, czyli:
-void Adaline::learn(const double inputs[],int expectedResult) {\
+void Adaline::learn(const double inputs[],int expectedResult) {
 
-	bool acceptableError = false; //zmienna, stwierdzajaca czy blad jest mozliwy do zaakceptowania
-	while(!acceptableError)
-	{
+	//bool acceptableError = false; //zmienna, stwierdzajaca czy blad jest mozliwy do zaakceptowania
 		int result = getResult(inputs);//otrzymaj wyniki, czyli zsumuj kazde wi*xi i przekaz sumę funkcji aktywacyjnej
-		double MSE=0.5*pow((expectedResult-sum),2);
+		//error=0.5*pow((expectedResult-sum),2);
+		double MSE=sqrt(expectedResult-sum);
 		//if(result == expectedResult)//Jesli wynik sie zgadza z pozadanym...
 			//return;//Zatrzymujemy uczenie
-		if(MSE<=EMax)
-			acceptableError=true;
-		else
+		if(MSE<EMax)
+			return;
 		changeWeights(sum,expectedResult,inputs);//W przeciwnym wypadku zmieniamy wagi
-	}
 }
 
 int Adaline::getResult(const double inputs[])
@@ -28,7 +25,7 @@ int Adaline::getResult(const double inputs[])
 										//if(sum>1) return 1;//FUNKCJA AKTYWACYJNA
 										//else return 0;
 	this->sum=Sum;
-	return(Sum>1) ? 1:0;
+	return(Sum>0.5) ? 1:0;
 }
 
 void Adaline::changeWeights(double actualResult,int desiredResult,const double inputs[])

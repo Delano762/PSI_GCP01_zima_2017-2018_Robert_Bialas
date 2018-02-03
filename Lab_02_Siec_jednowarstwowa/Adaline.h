@@ -19,7 +19,7 @@ public:
 	double sum;
 
 
-	double error; //blad globalny (po podniesieniu do kwadratu, podzieleniu przez 2 daje MSE)
+	double error=0.0; //blad globalny (po podniesieniu do kwadratu, podzieleniu przez 2 daje MSE)
 	double delta; //jest to wyliczona roznica (dodawana do wag)
 
 	double *weights;

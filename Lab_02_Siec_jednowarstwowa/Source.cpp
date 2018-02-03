@@ -133,7 +133,8 @@ void AdalineNonsense(Adaline adaline)
 			numberOfEpochs++;
 			done=true;
 			adaline.learn(Temp,expectedResults[i]);
-			if(adaline.getResult(Temp)!=expectedResults[i])done=false;
+			if(adaline.error>adaline.EMax)done=false;
+
 			//else cout<<perceptron.getResult(Temp)<<" ";
 			/*else
 			{

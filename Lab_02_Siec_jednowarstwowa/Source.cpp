@@ -1,10 +1,12 @@
 ﻿
 #include "Perceptron.h"
+#include "Adaline.h"
 #pragma once
 
 using namespace std;
 void getPerceptronTestData(double [][pixelsPerLetters],int []);
 void PerceptronNonsense(Perceptron);
+void AdalineNonsense(Adaline);
 int main() {
 
 	int numberOfInputs=pixelsPerLetters;
@@ -13,6 +15,9 @@ int main() {
 	Perceptron perceptron(numberOfInputs,learningRate);
 	PerceptronNonsense(perceptron);
 	
+	Adaline adaline(numberOfInputs,learningRate);
+	AdalineNonsense(adaline);
+
 
 	system("pause");
 	return 0;
@@ -95,5 +100,60 @@ void PerceptronNonsense(Perceptron perceptron)
 			cout<<Temp[j]<<" ";
 		}
 		cout<<" "<< perceptron.getResult(Temp) << " "<< endl;
+	}
+};
+void AdalineNonsense(Adaline adaline)
+{
+
+	char Letters[20] ={'A','B','C','D','E','F','G','H','I','J','a','b','c','d','e','f','g','h','i','j'};
+	double inputData[numberOfLetters][pixelsPerLetters];
+	int expectedResults[numberOfLetters];
+	getPerceptronTestData(inputData,expectedResults);
+	int numberOfEpochs=0;
+	cout << "Adaline - wyniki przed uczeniem: " << endl;
+
+	double Temp[pixelsPerLetters];
+	for(int i=0; i<numberOfLetters; i++)
+	{
+		for(int j=0; j<pixelsPerLetters; j++)
+		{
+			Temp[j]=inputData[i][j];
+			//cout<<Temp[i]<<" ";
+		}
+		//cout<<endl;
+		cout<<Letters[i]<<" - ";
+		for(int j=0; j<pixelsPerLetters; j++)
+			cout<<Temp[j]<<" ";
+		cout<<" "<<adaline.getResult(Temp)<<" "<<endl;
+
+		bool done=false;
+
+		while(done==false)
+		{
+			numberOfEpochs++;
+			done=true;
+			adaline.learn(Temp,expectedResults[i]);
+			if(adaline.getResult(Temp)!=expectedResults[i])done=false;
+			//else cout<<perceptron.getResult(Temp)<<" ";
+			/*else
+			{
+			for(int j=0; j<pixelsPerLetters; j++)
+			cout<<Temp[j]<<" ";
+			cout<<" "<<perceptron.getResult(Temp)<<" "<<endl;
+			}*/
+
+		}
+		//cout<<endl;
+	}
+	cout<<endl;
+	cout << "Adaline - wyniki po uczeniu: " << endl;
+	for(int i=0; i<numberOfLetters; i++) {
+		cout<<Letters[i]<<" - ";
+		for(int j=0; j<pixelsPerLetters; j++)
+		{
+			Temp[j]=inputData[i][j];
+			cout<<Temp[j]<<" ";
+		}
+		cout<<" "<< adaline.getResult(Temp) << " "<< endl;
 	}
 };

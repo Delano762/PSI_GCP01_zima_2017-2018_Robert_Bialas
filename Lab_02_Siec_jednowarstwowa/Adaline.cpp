@@ -7,14 +7,12 @@
 void Adaline::learn(const double inputs[],int expectedResult) {
 
 	//bool acceptableError = false; //zmienna, stwierdzajaca czy blad jest mozliwy do zaakceptowania
-		int result = getResult(inputs);//otrzymaj wyniki, czyli zsumuj kazde wi*xi i przekaz sumę funkcji aktywacyjnej
-		//error=0.5*pow((expectedResult-sum),2);
-		double MSE=sqrt(expectedResult-sum);
-		//if(result == expectedResult)//Jesli wynik sie zgadza z pozadanym...
-			//return;//Zatrzymujemy uczenie
-		if(MSE<EMax)
-			return;
-		changeWeights(sum,expectedResult,inputs);//W przeciwnym wypadku zmieniamy wagi
+	int result = getResult(inputs);//otrzymaj wyniki, czyli zsumuj kazde wi*xi i przekaz sumę funkcji aktywacyjnej
+	error=0.5*pow((expectedResult-sum),2);
+	if(result == expectedResult)//Jesli wynik sie zgadza z pozadanym...
+		return;//Zatrzymujemy uczenie
+
+	changeWeights(sum,expectedResult,inputs);//W przeciwnym wypadku zmieniamy wagi
 }
 
 int Adaline::getResult(const double inputs[])
@@ -38,7 +36,7 @@ Adaline::Adaline(unsigned numOfInputs,double trainingRate) {
 	srand(time(NULL));
 	this->learningRate = trainingRate;
 	this->learningRate = 0.01;
-	this->EMax=0.1;
+	this->EMax=0.0001;
 
 	this->numberOfInputs = numOfInputs;
 	if(this->numberOfInputs <= 0)
@@ -57,7 +55,7 @@ double Adaline::getRandomDouble()
 Adaline::Adaline() {//Konstruktor domyślny
 	srand(time(NULL));
 	this->learningRate = 0.01;
-	this->EMax=0.1;
+	this->EMax=0.0001;
 
 	this->numberOfInputs = 3;
 	if(this->numberOfInputs <= 0)

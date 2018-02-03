@@ -4,7 +4,7 @@
 #pragma once
 
 using namespace std;
-void getPerceptronTestData(double [][pixelsPerLetters],int []);
+void getPerceptronTestData(double[][pixelsPerLetters],int[]);
 void PerceptronNonsense(Perceptron);
 void AdalineNonsense(Adaline);
 int main() {
@@ -14,7 +14,7 @@ int main() {
 	double learningRate=0.01;
 	Perceptron perceptron(numberOfInputs,learningRate);
 	PerceptronNonsense(perceptron);
-	
+
 	Adaline adaline(numberOfInputs,learningRate);
 	AdalineNonsense(adaline);
 
@@ -63,32 +63,17 @@ void PerceptronNonsense(Perceptron perceptron)
 		for(int j=0; j<pixelsPerLetters; j++)
 		{
 			Temp[j]=inputData[i][j];
-			//cout<<Temp[i]<<" ";
 		}
-		//cout<<endl;
 		cout<<Letters[i]<<" - ";
 		for(int j=0; j<pixelsPerLetters; j++)
 			cout<<Temp[j]<<" ";
 		cout<<" "<<perceptron.getResult(Temp)<<" "<<endl;
 
-		bool done=false;
-
-		while(done==false)
+		while(perceptron.getResult(Temp)!=expectedResults[i])
 		{
 			numberOfEpochs++;
-			done=true;
 			perceptron.learn(Temp,expectedResults[i]);
-			if(perceptron.getResult(Temp)!=expectedResults[i])done=false;
-			//else cout<<perceptron.getResult(Temp)<<" ";
-			/*else
-			{
-			for(int j=0; j<pixelsPerLetters; j++)
-			cout<<Temp[j]<<" ";
-			cout<<" "<<perceptron.getResult(Temp)<<" "<<endl;
-			}*/
-
 		}
-		//cout<<endl;
 	}
 	cout<<endl;
 	cout << "Perceptron - wyniki po uczeniu: " << endl;
@@ -113,38 +98,25 @@ void AdalineNonsense(Adaline adaline)
 	cout << "Adaline - wyniki przed uczeniem: " << endl;
 
 	double Temp[pixelsPerLetters];
-	for(int i=0; i<numberOfLetters; i++)
-	{
+	for(int i=0; i<numberOfLetters; i++) {
+		cout<<Letters[i]<<" - ";
 		for(int j=0; j<pixelsPerLetters; j++)
 		{
 			Temp[j]=inputData[i][j];
-			//cout<<Temp[i]<<" ";
-		}
-		//cout<<endl;
-		cout<<Letters[i]<<" - ";
-		for(int j=0; j<pixelsPerLetters; j++)
 			cout<<Temp[j]<<" ";
-		cout<<" "<<adaline.getResult(Temp)<<" "<<endl;
-
-		bool done=false;
-
-		while(done==false)
+		}
+		cout<<" "<< adaline.getResult(Temp) << " "<< endl;
+	}
+	while(adaline.error<adaline.EMax) {
+		for(int i=0; i<numberOfLetters; i++)
 		{
-			numberOfEpochs++;
-			done=true;
-			adaline.learn(Temp,expectedResults[i]);
-			if(adaline.error>adaline.EMax)done=false;
-
-			//else cout<<perceptron.getResult(Temp)<<" ";
-			/*else
-			{
 			for(int j=0; j<pixelsPerLetters; j++)
-			cout<<Temp[j]<<" ";
-			cout<<" "<<perceptron.getResult(Temp)<<" "<<endl;
-			}*/
-
+			{
+				Temp[j]=inputData[i][j];
+			}
+			adaline.learn(Temp,expectedResults[i]);
 		}
-		//cout<<endl;
+		numberOfEpochs++;
 	}
 	cout<<endl;
 	cout << "Adaline - wyniki po uczeniu: " << endl;

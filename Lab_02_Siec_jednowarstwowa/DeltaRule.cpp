@@ -1,19 +1,21 @@
 ﻿#include <iostream>
 #include <ctime>
-#include "Adaline.h"
+#include "DeltaRule.h"
+
 
 //ucz sie, czyli:
-void Adaline::learn(const double inputs[],int expectedResult) {
+void DeltaRule::learn(const double inputs[],int expectedResult) {
 
-		error=0.0;
-		delta=expectedResult-getSum(inputs);
+	error=0.0;
+	output=activationFunction(getSum(inputs));
+	delta=expectedResult-output;
 
-		changeWeights(inputs);
+	changeWeights(inputs);
 
-		error+=delta*delta;
+	error+=delta*delta;
 }
 
-double Adaline::getSum(const double inputs[])
+double DeltaRule::getSum(const double inputs[])
 {
 	double Sum=0;
 	for(int i=0; i<this->numberOfInputs; i++)
@@ -22,33 +24,34 @@ double Adaline::getSum(const double inputs[])
 										//else return 0;
 	return Sum;
 }
-int Adaline::activationFunction(double Sum)
+double DeltaRule::activationFunction(double Sum)
 {
-	if(Sum>0.5)
-		return 1;
-	else 
-		return 0;
+	return (1/(1+exp(-1.0*Sum)));
 }
-int Adaline::getResult(const double inputs[]) 
+double DeltaRule::derivativeActivationFunction(double Sum)
+{
+	return (1.0*exp(-1.0*Sum)) / (pow(exp(-1.0*Sum) + 1, 2));
+}
+int DeltaRule::getResult(const double inputs[])
 {
 	for(int i=0; i<numberOfLetters; i++)
 	{
-		if(activationFunction(getSum(inputs))==1)
+		if(activationFunction(getSum(inputs))>0.5)
 			return 1;
 		else return 0;
 	}
 }
 
-void Adaline::changeWeights(const double inputs[])
+void DeltaRule::changeWeights(const double inputs[])
 {
 	for(int i=0; i<this->numberOfInputs; i++)
-		this->weights[i]+=this->learningRate*delta*inputs[i];//współczynnik uczenia*błąd lokalny*xi
+		this->weights[i]+=this->learningRate*delta*derivativeActivationFunction(getSum(inputs))*inputs[i];//współczynnik uczenia*błąd lokalny*xi
 }//deltawij = xj(di-yi) <- Osowski, (2.4) str. 19; Działanie uczenia jest przyśpieszone poprzez pomnożenie deltawij przez współczynnik uczenia
 
-Adaline::Adaline(unsigned numOfInputs,double trainingRate,double ErrorMax) {
+DeltaRule::DeltaRule(unsigned numOfInputs,double trainingRate,double ErrorMax) {
 	srand(time(NULL));
 	this->learningRate = trainingRate;
-	
+
 	this->EMax=ErrorMax;
 
 	this->numberOfInputs = numOfInputs;
@@ -60,7 +63,7 @@ Adaline::Adaline(unsigned numOfInputs,double trainingRate,double ErrorMax) {
 		this->weights[i] = getRandomDouble();//Wagi wi są przypadkowymi liczbami zmiennoprzecinkowymi
 }
 
-double Adaline::getRandomDouble()
+double DeltaRule::getRandomDouble()
 {
 	return ((double)rand()/(double)RAND_MAX);
 }

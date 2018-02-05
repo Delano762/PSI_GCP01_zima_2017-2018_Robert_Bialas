@@ -1,4 +1,5 @@
 #pragma once
+
 #define numberOfLetters 20
 #define pixelsPerLetters 35
 #include <iostream>
@@ -7,7 +8,7 @@
 #include <iostream>
 #include <string>
 using namespace std;
-class Adaline {
+class DeltaRule {
 public:
 
 	unsigned numberOfInputs;
@@ -17,16 +18,18 @@ public:
 	double EMax;
 	int epoch;
 	double sum;
+	double output; //przechowuje aktualna wartosc (porownywana z wartoscia oczekiwana)
 
 
 	double error=0.0; //blad globalny (po podniesieniu do kwadratu, podzieleniu przez 2 daje MSE)
 	double delta; //jest to wyliczona roznica (dodawana do wag)
 
 	double *weights;
-	Adaline(unsigned numOfInputs,double trainingRate,double ErrorMax);
+	DeltaRule(unsigned numOfInputs,double trainingRate,double ErrorMax);
 	double getRandomDouble();
 	void learn(const double inputs[],int expectedResult);
-	int activationFunction(double);
+	double activationFunction(double);
+	double derivativeActivationFunction(double);
 	int getResult(const double inputs[]);
 	double getSum(const double inputs[]);
 	void changeWeights(const double inputs[]);

@@ -18,7 +18,7 @@ int Perceptron::getResult(const double inputs[])
 		sum+=this->weights[i]*inputs[i];//suma wejść przemnożonych przez wagi
 										//if(sum>1) return 1;//FUNKCJA AKTYWACYJNA
 										//else return 0;
-	return(sum>1) ? 1:0;
+	return(sum>0.5) ? 1:0;
 }
 
 void Perceptron::changeWeights(int actualResult,int desiredResult,const double inputs[])
@@ -44,39 +44,3 @@ double Perceptron::getRandomDouble()
 {
 	return ((double)rand()/(double)RAND_MAX);
 }
-
-Perceptron::Perceptron() {//Konstruktor domyślny
-	srand(time(NULL));
-	this->learningRate = 0.01;
-
-	this->numberOfInputs = numberOfLetters;
-	if(this->numberOfInputs <= 0)
-		this->numberOfInputs = 1;
-
-	this->weights = new double[numberOfInputs];//tworzymy tablice wag, zalezna od ilosci wejsc
-	for(int i = 0; i < this->numberOfInputs; i++)
-		this->weights[i] = getRandomDouble();//Wagi wi są przypadkowymi liczbami zmiennoprzecinkowymi
-}
-
-void Perceptron::getTestData(double inputData[][pixelsPerLetters],int expectedResults[])
-{
-	fstream file;
-	file.open("data_for_learning.txt");
-
-	if(!file.good()) {
-		cout << "--------- I can't open the file with learning data ---------" << endl;
-		system("PAUSE");
-		exit(0);
-	}
-
-	//wczytuj z pliku dopóki s¹ dane
-	while(!file.eof())
-		for(int i = 0; i < numberOfLetters; i++) { // i oznacza indeks litery
-			for(int j = 0; j < pixelsPerLetters; j++) // j oznacza ilosc bitow na dan¹ litere
-				file >> inputData[i][j]; //wczytywanie do tablicy z wejsciami
-
-			file >> expectedResults[i]; //wczytanie z pliku czy dana litera jest duza (1) lub mala (0)
-		}
-
-	file.close();
-};

@@ -1,23 +1,27 @@
 ﻿
 #include "Perceptron.h"
 #include "Adaline.h"
+#include "DeltaRule.h"
 #pragma once
 
 using namespace std;
-void getPerceptronTestData(double[][pixelsPerLetters],int[]);
-void PerceptronNonsense(Perceptron);
-void AdalineNonsense(Adaline);
+void getTestData(double[][pixelsPerLetters],int[]);
+void PerceptronMain(Perceptron);
+void AdalineMain(Adaline);
+void DeltaRuleMain(DeltaRule);
 int main() {
 
 	int numberOfInputs=pixelsPerLetters;
 
-	double learningRate=0.01;
+	double learningRate=0.75,EMax=0.01;
 	Perceptron perceptron(numberOfInputs,learningRate);
-	PerceptronNonsense(perceptron);
-
-	Adaline adaline(numberOfInputs,learningRate);
-	AdalineNonsense(adaline);
-
+	PerceptronMain(perceptron);
+	cout<<endl;
+	//Adaline adaline(numberOfInputs,learningRate,EMax);
+	//AdalineMain(adaline);
+	cout<<endl;
+	//DeltaRule deltarule(numberOfInputs,learningRate,EMax);
+	//DeltaRuleMain(deltarule);
 
 	system("pause");
 	return 0;
@@ -25,7 +29,7 @@ int main() {
 
 
 
-void getPerceptronTestData(double inputData[][pixelsPerLetters],int expectedResults[])
+void getTestData(double inputData[][pixelsPerLetters],int expectedResults[])
 {
 	fstream file;
 	file.open("data_for_learning.txt");
@@ -47,13 +51,13 @@ void getPerceptronTestData(double inputData[][pixelsPerLetters],int expectedResu
 
 	file.close();
 };
-void PerceptronNonsense(Perceptron perceptron)
+void PerceptronMain(Perceptron perceptron)
 {
 
 	char Letters[20] ={'A','B','C','D','E','F','G','H','I','J','a','b','c','d','e','f','g','h','i','j'};
 	double inputData[numberOfLetters][pixelsPerLetters];
 	int expectedResults[numberOfLetters];
-	getPerceptronTestData(inputData,expectedResults);
+	getTestData(inputData,expectedResults);
 	int numberOfEpochs=0;
 	cout << "Perceptron - wyniki przed uczeniem: " << endl;
 
@@ -77,6 +81,7 @@ void PerceptronNonsense(Perceptron perceptron)
 	}
 	cout<<endl;
 	cout << "Perceptron - wyniki po uczeniu: " << endl;
+	cout<<"Liczba epok: "<<numberOfEpochs<<endl;
 	for(int i=0; i<numberOfLetters; i++) {
 		cout<<Letters[i]<<" - ";
 		for(int j=0; j<pixelsPerLetters; j++)
@@ -87,13 +92,13 @@ void PerceptronNonsense(Perceptron perceptron)
 		cout<<" "<< perceptron.getResult(Temp) << " "<< endl;
 	}
 };
-void AdalineNonsense(Adaline adaline)
+void AdalineMain(Adaline adaline)
 {
 
 	char Letters[20] ={'A','B','C','D','E','F','G','H','I','J','a','b','c','d','e','f','g','h','i','j'};
 	double inputData[numberOfLetters][pixelsPerLetters];
 	int expectedResults[numberOfLetters];
-	getPerceptronTestData(inputData,expectedResults);
+	getTestData(inputData,expectedResults);
 	int numberOfEpochs=0;
 	cout << "Adaline - wyniki przed uczeniem: " << endl;
 
@@ -107,7 +112,9 @@ void AdalineNonsense(Adaline adaline)
 		}
 		cout<<" "<< adaline.getResult(Temp) << " "<< endl;
 	}
-	while(adaline.error<adaline.EMax) {
+	int epoch=0;
+	do
+	{
 		for(int i=0; i<numberOfLetters; i++)
 		{
 			for(int j=0; j<pixelsPerLetters; j++)
@@ -115,11 +122,12 @@ void AdalineNonsense(Adaline adaline)
 				Temp[j]=inputData[i][j];
 			}
 			adaline.learn(Temp,expectedResults[i]);
+			adaline.error=adaline.error/2;
 		}
-		numberOfEpochs++;
-	}
-	cout<<endl;
-	cout << "Adaline - wyniki po uczeniu: " << endl;
+		epoch++;
+	}while(adaline.EMax<adaline.error);
+	cout <<endl<< "Adaline - wyniki po uczeniu: " << endl;
+	cout<<"Liczba epok: "<<epoch<<endl;
 	for(int i=0; i<numberOfLetters; i++) {
 		cout<<Letters[i]<<" - ";
 		for(int j=0; j<pixelsPerLetters; j++)
@@ -128,5 +136,51 @@ void AdalineNonsense(Adaline adaline)
 			cout<<Temp[j]<<" ";
 		}
 		cout<<" "<< adaline.getResult(Temp) << " "<< endl;
+	}
+};
+void DeltaRuleMain(DeltaRule deltarule)
+{
+	char Letters[20] ={'A','B','C','D','E','F','G','H','I','J','a','b','c','d','e','f','g','h','i','j'};
+	double inputData[numberOfLetters][pixelsPerLetters];
+	int expectedResults[numberOfLetters];
+	getTestData(inputData,expectedResults);
+	int numberOfEpochs=0;
+	cout << "Delta Rule - wyniki przed uczeniem: " << endl;
+
+	double Temp[pixelsPerLetters];
+	for(int i=0; i<numberOfLetters; i++) {
+		cout<<Letters[i]<<" - ";
+		for(int j=0; j<pixelsPerLetters; j++)
+		{
+			Temp[j]=inputData[i][j];
+			cout<<Temp[j]<<" ";
+		}
+		cout<<" "<< deltarule.getResult(Temp) << " "<< endl;
+	}
+	int epoch=0;
+	do
+	{
+		for(int i=0; i<numberOfLetters; i++)
+		{
+			for(int j=0; j<pixelsPerLetters; j++)
+			{
+				Temp[j]=inputData[i][j];
+			}
+			deltarule.learn(Temp,expectedResults[i]);
+			deltarule.error=deltarule.error/2;
+		}
+		epoch++;
+	} while(deltarule.EMax<deltarule.error);
+	cout <<endl<< "Delta Rule - wyniki po uczeniu: " << endl;
+	cout<<"Liczba epok: "<<epoch<<endl;
+	for(int i=0; i<numberOfLetters; i++) 
+	{
+		cout<<Letters[i]<<" - ";
+		for(int j=0; j<pixelsPerLetters; j++)
+		{
+			Temp[j]=inputData[i][j];
+			cout<<Temp[j]<<" ";
+		}
+		cout<<" "<< deltarule.getResult(Temp) << " "<< endl;
 	}
 };

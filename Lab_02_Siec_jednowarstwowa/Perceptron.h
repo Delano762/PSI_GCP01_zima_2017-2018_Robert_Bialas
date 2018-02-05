@@ -14,9 +14,7 @@ public:
 
 	double *weights;
 	Perceptron(unsigned numOfInputs,double trainingRate);
-	Perceptron();
 	double getRandomDouble();
-	void getTestData(double[][pixelsPerLetters],int[]);
 	void learn(const double inputs[],int expectedResult);
 	int getResult(const double inputs[]);
 	void changeWeights(int actualResult,int desiredResult,const double inputs[]);
